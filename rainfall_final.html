@@ -1,0 +1,67 @@
+<head>
+  <style>
+  .drop {
+    border-style: solid;
+    border-color:skyblue;
+    border-radius: 30px;
+    height:20px;
+    width: 20px;
+    position: absolute;
+    top: 0px;
+    left: 40px;
+  }
+  </style>
+</head>
+<body>
+
+<h2 id="score"> Score: 0 </h2>
+
+<script>
+
+var drops = [];
+var fallingSpeed = 10;
+var speedOfCreation = 500;
+var rainIndex = 0;
+var dropCount = 0;
+var score = 0;
+
+var randomNewDrops = function () {
+    dropCount++;
+    var drop = document.createElement("div");
+    drop.id = "drop" + rainIndex++;
+    drop.className = "drop";
+    drop.style.top = "0px";
+    drop.onclick = function () {
+        var scoreElement = document.getElementById("score");
+        score += 1;
+        scoreElement.innerText = "Score: " + score;
+    };
+    drop.style.left = (Math.random() * window.innerWidth) + "px";
+    document.body.appendChild(drop);
+    drops.push(drop);
+    if (dropCount < 30) {
+        setTimeout(randomNewDrops, speedOfCreation);
+    }
+};
+
+randomNewDrops();
+
+var rainMove = function(event) {
+  var drops = document.getElementsByClassName("drop");
+  for (var i = 0; i < drops.length; i++){
+      var currentPosition = drops[i].style.top;
+      if (currentPosition === "")
+        continue;
+      currentPosition = currentPosition.replace("px", "");
+      currentPosition = parseInt(currentPosition) + 1;
+      drops[i].style.top = currentPosition + "px";
+
+      if (currentPosition > window.innerHeight) {
+          drops[i].style.top = 0 + "px";
+        drops[i].style.left = (Math.random() * window.innerWidth) + "px";
+      }
+  }
+};
+setInterval(rainMove, fallingSpeed);
+</script>
+</body>
