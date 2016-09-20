@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+  <head>
+    <style>
+      body {
+        background-color: beige;
+      }
+      p {color: black;
+        font-size: 20px;
+      }
+      button {
+        font-size: 25px;
+        border-radius: 15px;
+      }
+      div {
+        text-align: center;
+        display: table-cell;
+        font-size: 20px;
+
+      }
+      #gameButton {background: lightgreen;}
+      #randomNumbersButton {background: beige;
+      }
+      #randomNumbersButton:hover {
+        background-color: lightgreen; /* Green */
+
+      }
+      #winnerFromFunction {color: green;}
+      #eliminatedFromFunction {color: darkred;}
+    </style>
+    <title>Children's Game
+    </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js">
+    </script>
+  </head>
+
+  <body>
+    <h1>The Children's Game</h1>
+    <p>Number of children:
+      <input type="text" id="numberOfChildren"></input>
+    </p>
+
+    <p>Elimination count:&nbsp;&nbsp;&nbsp;
+      <input type="text" id="eliminationCount"></input>
+    </p>
+
+    <button type="button" class="btn btn-default" onclick="createRandomNumbers()" id="randomNumbersButton">Create numbers</button>
+    <button type="button" class="btn btn-primary" onclick="playGame()" id="gameButton">Play Game</button>
+
+    <div> </div>
+      <br>
+    <div id="gameResult"></div>
+    <div id="winnerFromFunction"></div>
+      <br>
+    <div id="eliminatedList"></div>
+    <div id="eliminatedFromFunction"></div>
+
+    <script>
+    function playGame () {
+      var numberOfChildren = document.getElementById("numberOfChildren");
+      var eliminationCount = document.getElementById("eliminationCount");
+      var gameResult = document.getElementById("gameResult");
+      var winnerFromFunction = document.getElementById("winnerFromFunction");
+      var eliminatedList = document.getElementById("eliminatedList");
+      if (numberOfChildren.value.length < 1 || eliminationCount.value.length < 1
+          || isNaN(numberOfChildren.value) || isNaN(eliminationCount.value)) {
+        gameResult.innerText = "Please insert number of children and elimination count.";
+        eliminatedList.innerText = "";
+      }
+      else {
+        jQuery.ajax({url:"/childrengame",
+          type: "get",
+          data: {
+            number: numberOfChildren.value,
+            count: eliminationCount.value
+          },
+          success: function(result){
+          var resultObject = result;
+          gameResult.innerHTML = "The winner is:&nbsp;";
+          winnerFromFunction.innerText = result.winner;
+          eliminatedList.innerHTML = "List of eliminated children:&nbsp;";
+          eliminatedFromFunction.innerText = result.eliminatedList;
+        }});
+      }
+    };
+    function createRandomNumbers () {
+      var numberOfChildren = document.getElementById("numberOfChildren");
+      var eliminationCount = document.getElementById("eliminationCount");
+      numberOfChildren.value = Math.ceil(Math.random()*20);
+      eliminationCount.value = Math.ceil(Math.random()*10);
+    };
+    </script>
+  </body>
+</html>
